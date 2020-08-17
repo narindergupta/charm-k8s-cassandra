@@ -1,0 +1,2 @@
+ops
+git+https://github.com/chipaca/ops-lib-k8s.git

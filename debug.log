@@ -1,0 +1,426 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    apparmor.security.beta.kubernetes.io/pod: runtime/default
+    juju.io/controller: f0f87eb2-060f-4f14-81a3-98d8cdf8b567
+    juju.io/model: 44b20e1e-b32d-40d4-8b1b-183f90087330
+    juju.io/unit: charm-k8s-cassandra/0
+    seccomp.security.beta.kubernetes.io/pod: docker/default
+  creationTimestamp: "2020-08-17T17:43:51Z"
+  generateName: charm-k8s-cassandra-
+  labels:
+    controller-revision-hash: charm-k8s-cassandra-7c95c4d6f8
+    juju-app: charm-k8s-cassandra
+    statefulset.kubernetes.io/pod-name: charm-k8s-cassandra-0
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:apparmor.security.beta.kubernetes.io/pod: {}
+          f:juju.io/controller: {}
+          f:juju.io/model: {}
+          f:seccomp.security.beta.kubernetes.io/pod: {}
+        f:generateName: {}
+        f:labels:
+          .: {}
+          f:controller-revision-hash: {}
+          f:juju-app: {}
+          f:statefulset.kubernetes.io/pod-name: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"208ce337-c829-40e8-91ba-40697e4d756a"}:
+            .: {}
+            f:apiVersion: {}
+            f:blockOwnerDeletion: {}
+            f:controller: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        f:containers:
+          k:{"name":"charm-k8s-cassandra"}:
+            .: {}
+            f:env:
+              .: {}
+              k:{"name":"CASSANDRA_CLUSTER_NAME"}:
+                .: {}
+                f:name: {}
+                f:value: {}
+              k:{"name":"CASSANDRA_DC"}:
+                .: {}
+                f:name: {}
+                f:value: {}
+              k:{"name":"CASSANDRA_RACK"}:
+                .: {}
+                f:name: {}
+                f:value: {}
+              k:{"name":"CASSANDRA_SEEDS"}:
+                .: {}
+                f:name: {}
+                f:value: {}
+              k:{"name":"HEAP_NEWSIZE"}:
+                .: {}
+                f:name: {}
+                f:value: {}
+              k:{"name":"MAX_HEAP_SIZE"}:
+                .: {}
+                f:name: {}
+                f:value: {}
+              k:{"name":"POD_IP"}:
+                .: {}
+                f:name: {}
+                f:valueFrom:
+                  .: {}
+                  f:fieldRef:
+                    .: {}
+                    f:apiVersion: {}
+                    f:fieldPath: {}
+            f:image: {}
+            f:imagePullPolicy: {}
+            f:name: {}
+            f:ports:
+              .: {}
+              k:{"containerPort":7000,"protocol":"TCP"}:
+                .: {}
+                f:containerPort: {}
+                f:name: {}
+                f:protocol: {}
+              k:{"containerPort":7001,"protocol":"TCP"}:
+                .: {}
+                f:containerPort: {}
+                f:name: {}
+                f:protocol: {}
+              k:{"containerPort":9042,"protocol":"TCP"}:
+                .: {}
+                f:containerPort: {}
+                f:name: {}
+                f:protocol: {}
+            f:readinessProbe:
+              .: {}
+              f:exec:
+                .: {}
+                f:command: {}
+              f:failureThreshold: {}
+              f:initialDelaySeconds: {}
+              f:periodSeconds: {}
+              f:successThreshold: {}
+              f:timeoutSeconds: {}
+            f:resources: {}
+            f:securityContext:
+              .: {}
+              f:capabilities:
+                .: {}
+                f:add: {}
+            f:terminationMessagePath: {}
+            f:terminationMessagePolicy: {}
+            f:volumeMounts:
+              .: {}
+              k:{"mountPath":"/usr/bin/juju-run"}:
+                .: {}
+                f:mountPath: {}
+                f:name: {}
+                f:subPath: {}
+              k:{"mountPath":"/var/lib/cassandra"}:
+                .: {}
+                f:mountPath: {}
+                f:name: {}
+              k:{"mountPath":"/var/lib/juju"}:
+                .: {}
+                f:mountPath: {}
+                f:name: {}
+        f:dnsPolicy: {}
+        f:enableServiceLinks: {}
+        f:hostname: {}
+        f:initContainers:
+          .: {}
+          k:{"name":"juju-pod-init"}:
+            .: {}
+            f:args: {}
+            f:command: {}
+            f:image: {}
+            f:imagePullPolicy: {}
+            f:name: {}
+            f:resources: {}
+            f:terminationMessagePath: {}
+            f:terminationMessagePolicy: {}
+            f:volumeMounts:
+              .: {}
+              k:{"mountPath":"/var/lib/juju"}:
+                .: {}
+                f:mountPath: {}
+                f:name: {}
+            f:workingDir: {}
+        f:restartPolicy: {}
+        f:schedulerName: {}
+        f:securityContext: {}
+        f:subdomain: {}
+        f:terminationGracePeriodSeconds: {}
+        f:volumes:
+          .: {}
+          k:{"name":"database-67a433b9"}:
+            .: {}
+            f:name: {}
+            f:persistentVolumeClaim:
+              .: {}
+              f:claimName: {}
+          k:{"name":"juju-data-dir"}:
+            .: {}
+            f:emptyDir: {}
+            f:name: {}
+    manager: kube-controller-manager
+    operation: Update
+    time: "2020-08-17T17:43:51Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:conditions:
+          .: {}
+          k:{"type":"PodScheduled"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+    manager: kube-scheduler
+    operation: Update
+    time: "2020-08-17T17:43:51Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:juju.io/unit: {}
+    manager: jujud
+    operation: Update
+    time: "2020-08-17T17:43:52Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:conditions:
+          k:{"type":"ContainersReady"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Initialized"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Ready"}:
+            .: {}
+            f:lastProbeTime: {}
+            f:lastTransitionTime: {}
+            f:status: {}
+            f:type: {}
+        f:containerStatuses: {}
+        f:hostIP: {}
+        f:initContainerStatuses: {}
+        f:phase: {}
+        f:podIP: {}
+        f:podIPs:
+          .: {}
+          k:{"ip":"10.1.16.172"}:
+            .: {}
+            f:ip: {}
+        f:startTime: {}
+    manager: kubelet
+    operation: Update
+    time: "2020-08-17T17:44:18Z"
+  name: charm-k8s-cassandra-0
+  namespace: cassandra
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: StatefulSet
+    name: charm-k8s-cassandra
+    uid: 208ce337-c829-40e8-91ba-40697e4d756a
+  resourceVersion: "598185"
+  selfLink: /api/v1/namespaces/cassandra/pods/charm-k8s-cassandra-0
+  uid: db5a5fa8-8e69-4bd3-a6b3-9d77b60452fb
+spec:
+  containers:
+  - env:
+    - name: CASSANDRA_CLUSTER_NAME
+      value: K8Demo
+    - name: CASSANDRA_DC
+      value: DC1-K8Demo
+    - name: CASSANDRA_RACK
+      value: Rack1-K8Demo
+    - name: CASSANDRA_SEEDS
+      value: charm-k8s-cassandra-0.charm-k8s-cassandra-endpoints.cassandra.svc.cluster.local
+    - name: HEAP_NEWSIZE
+      value: 100M
+    - name: MAX_HEAP_SIZE
+      value: 512M
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    image: gcr.io/google-samples/cassandra:v13
+    imagePullPolicy: IfNotPresent
+    name: charm-k8s-cassandra
+    ports:
+    - containerPort: 7000
+      name: intra-node
+      protocol: TCP
+    - containerPort: 7001
+      name: tls-intra-node
+      protocol: TCP
+    - containerPort: 9042
+      name: cql
+      protocol: TCP
+    readinessProbe:
+      exec:
+        command:
+        - /bin/bash
+        - -c
+        - /ready-probe.sh
+      failureThreshold: 3
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    resources: {}
+    securityContext:
+      capabilities:
+        add:
+        - IPC_LOCK
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/lib/juju
+      name: juju-data-dir
+    - mountPath: /usr/bin/juju-run
+      name: juju-data-dir
+      subPath: tools/jujud
+    - mountPath: /var/lib/cassandra
+      name: database-67a433b9
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-9csf7
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: charm-k8s-cassandra-0
+  initContainers:
+  - args:
+    - -c
+    - |
+      export JUJU_DATA_DIR=/var/lib/juju
+      export JUJU_TOOLS_DIR=$JUJU_DATA_DIR/tools
+
+      mkdir -p $JUJU_TOOLS_DIR
+      cp /opt/jujud $JUJU_TOOLS_DIR/jujud
+      initCmd=$($JUJU_TOOLS_DIR/jujud help commands | grep caas-unit-init)
+      if test -n "$initCmd"; then
+      $JUJU_TOOLS_DIR/jujud caas-unit-init --debug --wait;
+      else
+      exit 0
+      fi
+    command:
+    - /bin/sh
+    image: jujusolutions/jujud-operator:2.8.1
+    imagePullPolicy: IfNotPresent
+    name: juju-pod-init
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/lib/juju
+      name: juju-data-dir
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-9csf7
+      readOnly: true
+    workingDir: /var/lib/juju
+  nodeName: orangebox24
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  subdomain: charm-k8s-cassandra-endpoints
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: database-67a433b9
+    persistentVolumeClaim:
+      claimName: database-67a433b9-charm-k8s-cassandra-0
+  - emptyDir: {}
+    name: juju-data-dir
+  - name: default-token-9csf7
+    secret:
+      defaultMode: 420
+      secretName: default-token-9csf7
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2020-08-17T17:43:58Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2020-08-17T17:44:18Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2020-08-17T17:44:18Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2020-08-17T17:43:52Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://02e9963ec7d06575a7ee27a758cc6f344e099d9e088ec4a174d1b8afc2750ed7
+    image: gcr.io/google-samples/cassandra:v13
+    imageID: gcr.io/google-samples/cassandra@sha256:7a3d20afa0a46ed073a5c587b4f37e21fa860e83c60b9c42fec1e1e739d64007
+    lastState: {}
+    name: charm-k8s-cassandra
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2020-08-17T17:43:58Z"
+  hostIP: 172.27.24.1
+  initContainerStatuses:
+  - containerID: containerd://fba5c0798799820fa318fb75b506c72120c4ec66943cab18751be0c7de148398
+    image: docker.io/jujusolutions/jujud-operator:2.8.1
+    imageID: docker.io/jujusolutions/jujud-operator@sha256:0925e56fd86c1fde2c0f678e2e1aeb5ff2e5f27e557a911ffd0068dd5e8c8e02
+    lastState: {}
+    name: juju-pod-init
+    ready: true
+    restartCount: 0
+    state:
+      terminated:
+        containerID: containerd://fba5c0798799820fa318fb75b506c72120c4ec66943cab18751be0c7de148398
+        exitCode: 0
+        finishedAt: "2020-08-17T17:43:57Z"
+        reason: Completed
+        startedAt: "2020-08-17T17:43:54Z"
+  phase: Running
+  podIP: 10.1.16.172
+  podIPs:
+  - ip: 10.1.16.172
+  qosClass: BestEffort
+  startTime: "2020-08-17T17:43:52Z"

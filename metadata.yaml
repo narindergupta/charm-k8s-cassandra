@@ -1,0 +1,27 @@
+# Copyright 2020 narindergupta
+# See LICENSE file for licensing details.
+name: charm-k8s-cassandra
+summary: Kafka charm for Kubernetes.
+maintainers:
+  - Narinder Gupta <narinder.gupta@canonical.com>
+description: |
+  A CAAS charm to deploy Kafka.
+min-juju-version: 2.7.4
+tags:
+  - application
+  - database
+series:
+  - kubernetes
+provides:
+  cassandra:
+    interface: cassandra
+peers:
+  cluster:
+    interface: cluster
+deployment:
+  type: stateful
+  service: cluster
+storage:
+  database:
+    type: filesystem
+    location: /var/lib/cassandra

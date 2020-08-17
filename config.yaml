@@ -1,0 +1,5 @@
+"options":
+  "image":
+    "type": "string"
+    "description": "OCI image"
+    "default": "gcr.io/google-samples/cassandra:v13"
