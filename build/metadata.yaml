@@ -1,1 +1,29 @@
-/home/narinder/develop/charm/k8s/charm-k8s-cassandra/metadata.yaml
+# Copyright 2020 narindergupta
+# See LICENSE file for licensing details.
+name: k8s-cassandra
+summary: distributed storage system for structured data.
+maintainers:
+  - Narinder Gupta <narinder.gupta@canonical.com>
+description: |
+  A CAAS charm to deploy Kafka.
+min-juju-version: 2.7.4
+tags:
+  - application
+  - database
+series:
+  - kubernetes
+provides:
+  database:
+    interface: cassandra
+  database-admin:
+    interface: cassandra
+peers:
+  cluster:
+    interface: cassandra-cluster
+deployment:
+  type: stateful
+  service: cluster
+storage:
+  database:
+    type: filesystem
+    location: /var/lib/cassandra

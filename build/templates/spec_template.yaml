@@ -1,0 +1,35 @@
+version: 2
+containers:
+  - name: %(name)s
+    image: %(docker_image)s
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 7000
+        name: intra-node
+      - containerPort: 7001
+        name: tls-intra-node
+      - containerPort: 9042
+        name: cql
+    kubernetes:
+      readinessProbe:
+        exec:
+          command:
+          - /bin/bash
+          - -c
+          - /ready-probe.sh
+        initialDelaySeconds: 15
+        timeoutSeconds: 5
+      securityContext:
+        capabilities:
+          add:
+            - IPC_LOCK
+    config:
+      MAX_HEAP_SIZE: %(max_heap_size)s
+      HEAP_NEWSIZE: %(heap_newsize)s
+      CASSANDRA_CLUSTER_NAME: %(cluster_name)s
+      CASSANDRA_DC: %(datacenter)s
+      CASSANDRA_RACK: %(rack)s
+      CASSANDRA_SEEDS: %(name)s-0.%(name)s-endpoints.%(model)s.svc.cluster.local
+      POD_IP:
+        field:
+          path: status.podIP

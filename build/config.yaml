@@ -1,1 +1,43 @@
-/home/narinder/develop/charm/k8s/charm-k8s-cassandra/config.yaml
+"options":
+  "image":
+    "type": "string"
+    "description": "OCI image"
+    "default": "gcr.io/google-samples/cassandra:v13"
+  "max_heap_size":
+    "type": "string"
+    "default": "384M"
+    "description": >
+      Total size of Java memory heap, for example 1G or 512M.
+      If you set this, you should also set heap_newsize. The
+      default is automatically tuned.
+  "heap_newsize":
+    "type": "string"
+    "default": "32M"
+    "description": >
+      The size of the JVM's young generation in the heap. If you
+      set this, you should also set max_heap_size. If in doubt,
+      go with 100M per physical CPU core. The default is
+      automatically tuned.
+  "cluster_name":
+    "type": "string"
+    "default": "juju"
+    "description": >
+      Name of the Cassandra cluster. This is mainly used to
+      prevent machines in one logical cluster from joining
+      another. All Cassandra services you wish to cluster together
+      must have the same cluster_name. This setting cannot be changed
+      after service deployment.
+  "datacenter":
+    "type": "string"
+    "default": "DC1"
+    "description": >
+      The node's datacenter used by the endpoint_snitch. e.g. "DC1".
+      It cannot be changed after service deployment.
+  "rack":
+    "type": "string"
+    "default": "Rack1"
+    "description": >
+      The rack used by the endpoint_snitch for all units in this
+      service. e.g. "Rack1". This cannot be changed after deployment.
+      It defaults to the service name. Cassandra will store replicated
+      data in different racks whenever possible.
