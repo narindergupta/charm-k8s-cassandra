@@ -4,8 +4,12 @@
 import io
 import json
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 from uuid import uuid4
+
+from ops.testing import Harness
+from ops.charm import CharmBase
 
 import k8s
 from k8s import (
@@ -15,8 +19,25 @@ from k8s import (
 
 
 class GetPodStatusTest(unittest.TestCase):
+    def get_harness(self, charm_name=None):
+        class MyCharm(CharmBase):
+            pass
+
+        if charm_name is None:
+            charm_name = uuid4()
+        harness = Harness(MyCharm, meta="{{name: {!r}}}".format(charm_name))
+        harness.set_model_name(uuid4())
+        self.addCleanup(harness.cleanup)
+        harness.begin()
+
+        return harness
+
+    def load_a_pod_status_response(self):
+        with (Path(__file__).parent / "a_pod_status.json").open("rt", encoding="utf8") as f:
+            return json.load(f)
+
     @patch("k8s.APIServer", autospec=True, spec_set=True)
-    def test__returns_a_PodStatus_obj_if_resource_found(self, mock_api_server_cls):
+    def test_fetch__returns_a_PodStatus_obj_if_resource_found(self, mock_api_server_cls):
         # Setup
         juju_unit = uuid4()
 
@@ -27,10 +48,51 @@ class GetPodStatusTest(unittest.TestCase):
         }
 
         # Exercise
-        pod_status = k8s.get_pod_status(juju_model=uuid4(), juju_app=uuid4(), juju_unit=juju_unit)
+        pod_status = k8s.PodStatus.fetch(juju_model=uuid4(), juju_app=uuid4(), juju_unit=juju_unit)
 
         # Assert
         assert type(pod_status) == PodStatus
+
+    @patch("k8s.APIServer", autospec=True, spec_set=True)
+    def test_for_charm__returns_a_PodStatus_obj_if_resource_found(self, mock_api_server_cls):
+        # Setup
+        harness = self.get_harness()
+        juju_unit = harness.charm.unit.name
+
+        mock_api_server = mock_api_server_cls.return_value
+        mock_api_server.get.return_value = {
+            "kind": "PodList",
+            "items": [{"metadata": {"annotations": {"juju.io/unit": juju_unit}}}],
+        }
+
+        # Exercise
+        pod_status = k8s.PodStatus.for_charm(harness.charm)
+
+        # Assert
+        assert type(pod_status) == PodStatus
+
+    @patch("k8s.APIServer", autospec=True, spec_set=True)
+    def test_fetch__works(self, mock_api_server_cls):
+        mock_api_server = mock_api_server_cls.return_value
+        mock_api_server.get.return_value = self.load_a_pod_status_response()
+        pod_status = k8s.PodStatus.fetch("my-model", "my-app", "charm-k8s-cassandra/0")
+
+        assert not pod_status.is_unknown
+        assert pod_status.is_running
+        assert pod_status.is_ready
+
+    @patch("k8s.APIServer", autospec=True, spec_set=True)
+    def test_for_charm__works(self, mock_api_server_cls):
+        # a_pod_status.json has data form 'charm-k8s-cassandra'
+        harness = self.get_harness("charm-k8s-cassandra")
+        mock_api_server = mock_api_server_cls.return_value
+        mock_api_server.get.return_value = self.load_a_pod_status_response()
+
+        pod_status = k8s.PodStatus.for_charm(harness.charm)
+
+        assert not pod_status.is_unknown
+        assert pod_status.is_running
+        assert pod_status.is_ready
 
     @patch("k8s.APIServer", autospec=True, spec_set=True)
     def test__returns_PodStatus_even_if_resource_not_found(self, mock_api_server_cls):
@@ -39,7 +101,7 @@ class GetPodStatusTest(unittest.TestCase):
         mock_api_server.get.return_value = {"kind": "PodList", "items": []}
 
         # Exercise
-        pod_status = k8s.get_pod_status(juju_model=uuid4(), juju_app=uuid4(), juju_unit=uuid4())
+        pod_status = k8s.PodStatus.fetch(juju_model=uuid4(), juju_app=uuid4(), juju_unit=uuid4())
 
         # Assert
         assert type(pod_status) == PodStatus
@@ -58,6 +120,7 @@ class APIServerTest(unittest.TestCase):
         mock_open.return_value = mock_token_file
         mock_response_dict = {}
         mock_response_json = io.StringIO(json.dumps(mock_response_dict))
+        mock_response_json.status = 200
 
         mock_conn = mock_https_connection_cls.return_value
         mock_conn.getresponse.return_value = mock_response_json
@@ -82,7 +145,7 @@ class PodStatusTest(unittest.TestCase):
         }
 
         # Exercise
-        pod_status = PodStatus(status_dict=status_dict)
+        pod_status = PodStatus(**status_dict)
 
         # Assert
         assert not pod_status.is_unknown
@@ -100,7 +163,7 @@ class PodStatusTest(unittest.TestCase):
         }
 
         # Exercise
-        pod_status = PodStatus(status_dict=status_dict)
+        pod_status = PodStatus(**status_dict)
 
         # Assert
         assert not pod_status.is_unknown
@@ -118,7 +181,7 @@ class PodStatusTest(unittest.TestCase):
         }
 
         # Exercise
-        pod_status = PodStatus(status_dict=status_dict)
+        pod_status = PodStatus(**status_dict)
 
         # Assert
         assert not pod_status.is_unknown
@@ -127,9 +190,21 @@ class PodStatusTest(unittest.TestCase):
 
     def test__status_is_unknown(self):
         # Exercise
-        pod_status = PodStatus(status_dict=None)
+        pod_status = PodStatus()
 
         # Assert
         assert pod_status.is_unknown
+        assert not pod_status.is_running
+        assert not pod_status.is_ready
+
+    def test__pod_status_incomplete(self):
+        # Setup
+        status_dict = {"metadata": {}}
+
+        # Exercise
+        pod_status = PodStatus(**status_dict)
+
+        # Assert
+        assert not pod_status.is_unknown
         assert not pod_status.is_running
         assert not pod_status.is_ready

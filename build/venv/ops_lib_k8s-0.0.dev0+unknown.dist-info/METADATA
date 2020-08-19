@@ -29,11 +29,13 @@ The best way to use it is via the “opslib” mechanism,
 
     k8s = ops.lib.use("k8s", 0, "chipaca@canonical.com")
 
-The API is still 0 because there are still two things to do:
+The API version is still 0 because there are still two things to do:
 
 * [ ] refactor the tests so they are more readable and depend on
       patching the world less
 
 * [ ] pull in @camille-rodriguez's `K8sPvc`, and add tests for it.
+
+Once that's done I'll push it to pypi.
 
 

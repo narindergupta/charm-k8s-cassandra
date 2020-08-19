@@ -1,1 +1,13 @@
 kubernetesResources:
+  pod:
+    restartPolicy: OnFailure
+    activeDeadlineSeconds: 10
+    terminationGracePeriodSeconds: 20
+    lifecycle:
+      preStop:
+        exec:
+          command:
+          - /bin/sh
+          - -c
+          - nodetool drain
+

@@ -24,12 +24,12 @@ containers:
           add:
             - IPC_LOCK
     config:
-      MAX_HEAP_SIZE: "512M"
-      HEAP_NEWSIZE: "100M"
-      CASSANDRA_CLUSTER_NAME: "K8Demo"
-      CASSANDRA_DC: "DC1-K8Demo"
-      CASSANDRA_RACK: "Rack1-K8Demo"
-      CASSANDRA_SEEDS: "charm-k8s-cassandra-0.charm-k8s-cassandra-endpoints.cassandra.svc.cluster.local"
+      MAX_HEAP_SIZE: %(max_heap_size)s
+      HEAP_NEWSIZE: %(heap_newsize)s
+      CASSANDRA_CLUSTER_NAME: %(cluster_name)s
+      CASSANDRA_DC: %(datacenter)s
+      CASSANDRA_RACK: %(rack)s
+      CASSANDRA_SEEDS: %(name)s-0.%(name)s-endpoints.%(model)s.svc.cluster.local
       POD_IP:
         field:
           path: status.podIP

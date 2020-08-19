@@ -1,4 +1,4 @@
-k8s/__init__.py,sha256=ktswpB5rXDsGvwySU43KS8uFcnKOagmyKCYLAGVGd4A,2727
+k8s/__init__.py,sha256=R0s5g67qRpVNXa9k8Jvu7G_WtMl85d-Ccu9uOxmX6vo,3519
 k8s/__pycache__/__init__.cpython-38.pyc,,
 k8s/__pycache__/version.cpython-38.pyc,,
 k8s/opslib/k8s/__init__.py,sha256=x1EdSUNXkJAFiuVQBCBZ5rSVVb866GCziUt3DfPqJT4,259
@@ -7,7 +7,7 @@ k8s/version.py,sha256=Gb7y9jjmgHWLaDhiy78dd2HxMW4BNqmNZ5UtRW4VH1k,58
 ops_lib_k8s-0.0.dev0+unknown.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 ops_lib_k8s-0.0.dev0+unknown.dist-info/LICENSE,sha256=xx0jnfkXJvxRnG63LTGOxlggYnIysveWIZ6H3PNdCrQ,11357
 ops_lib_k8s-0.0.dev0+unknown.dist-info/LICENSE.txt,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
-ops_lib_k8s-0.0.dev0+unknown.dist-info/METADATA,sha256=_DLLdXn5B7c3TvubDJmJyyMsKZX7rXmbakG3VikufZg,1126
+ops_lib_k8s-0.0.dev0+unknown.dist-info/METADATA,sha256=kp93sozWHJ8WXoWjkNrggX9VpD98p-Ys35ZYQP_f95c,1174
 ops_lib_k8s-0.0.dev0+unknown.dist-info/RECORD,,
 ops_lib_k8s-0.0.dev0+unknown.dist-info/WHEEL,sha256=EVRjI69F5qVjm_YgqcTXPnTAv3BfSUr0WVAHuSP3Xoo,92
 ops_lib_k8s-0.0.dev0+unknown.dist-info/top_level.txt,sha256=G1DZAfq4m7OwY78OnJSEJ0ANOeU8N5s8en3c6Pd93gg,22
@@ -16,4 +16,4 @@ test/__pycache__/__init__.cpython-38.pyc,,
 test/__pycache__/test_infra.cpython-38.pyc,,
 test/__pycache__/test_k8s.cpython-38.pyc,,
 test/test_infra.py,sha256=KUVKBRzbTQAfzbFah9D1zZ5fdGP3MQZSTEeNjpwazDg,2747
-test/test_k8s.py,sha256=Fo417FhHGfTWhiu0aXqYErhUMw171DUU5ZS3UxfBkG8,4157
+test/test_k8s.py,sha256=t1jvs_i6PfeXwXmSoQ7t0wOB6tx7xgC8XQsufWll4yw,6711

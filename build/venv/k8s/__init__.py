@@ -15,21 +15,9 @@ logger = logging.getLogger()
 
 
 def get_pod_status(juju_model, juju_app, juju_unit):
-    namespace = juju_model
-
-    path = "/api/v1/namespaces/{}/pods?labelSelector=juju-app={}".format(namespace, juju_app)
-
-    api_server = APIServer()
-    response = api_server.get(path)
-    status_dict = None
-
-    if response.get("kind", "") == "PodList" and response["items"]:
-        for item in response["items"]:
-            if item["metadata"]["annotations"].get("juju.io/unit") == juju_unit:
-                status_dict = item
-                break
-
-    return PodStatus(status_dict)
+    """Left to not break people, but you should probably just do `PodStatus.for_charm()` instead.
+    """
+    return PodStatus.fetch(juju_model, juju_app, juju_unit)
 
 
 class APIServer:
@@ -63,32 +51,65 @@ class APIServer:
         conn = http.client.HTTPSConnection(host, context=ssl_context)
         logger.debug("%s %s/%s", method, host, path)
         conn.request(method=method, url=path, headers=headers)
+        response = conn.getresponse()
+        logger.debug("%s %s/%s done: %s", method, host, path, response.status)
 
-        return json.loads(conn.getresponse().read())
+        return json.load(response)
 
 
-class PodStatus:
-    def __init__(self, status_dict):
-        self._status = status_dict
+class PodStatus(dict):
+    @classmethod
+    def for_charm(cls, charm):
+        """Fetch the status of the workload pod for the given charm."""
+        return cls.fetch(charm.model.name, charm.app.name, charm.unit.name)
+
+    @classmethod
+    def fetch(cls, juju_model, juju_app, juju_unit):
+        """Fetch the status of the pod for the given model, app and unit."""
+        logger.debug("getting pod status for %s/%s/%s", juju_model, juju_app, juju_unit)
+        namespace = juju_model
+
+        path = "/api/v1/namespaces/{}/pods?labelSelector=juju-app={}".format(namespace, juju_app)
+
+        api_server = APIServer()
+        response = api_server.get(path)
+
+        status = cls()
+        try:
+            if response["kind"] == "PodList":
+                for item in response["items"]:
+                    if item["metadata"]["annotations"]["juju.io/unit"] == juju_unit:
+                        status.update(item)
+                        break
+        except KeyError:
+            pass
+
+        return status
 
     @property
     def is_ready(self):
-        if not self._status:
+        if not self:
             return False
 
-        for condition in self._status["status"]["conditions"]:
-            if condition["type"] == "ContainersReady":
-                return condition["status"] == "True"
+        try:
+            for condition in self["status"]["conditions"]:
+                if condition["type"] == "ContainersReady":
+                    return condition["status"] == "True"
+        except KeyError:
+            pass
 
         return False
 
     @property
     def is_running(self):
-        if not self._status:
+        if not self:
             return False
 
-        return self._status["status"]["phase"] == "Running"
+        try:
+            return self["status"]["phase"] == "Running"
+        except KeyError:
+            return False
 
     @property
     def is_unknown(self):
-        return not self._status
+        return not self

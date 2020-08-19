@@ -22,7 +22,7 @@ import ops.lib
 logger = logging.getLogger(__name__)
 
 
-class CharmK8SCassandraCharm(CharmBase):
+class K8SCassandraCharm(CharmBase):
     _stored = StoredState()
 
     def __init__(self, *args):
@@ -35,22 +35,30 @@ class CharmK8SCassandraCharm(CharmBase):
         self._stored.set_default(
             recently_started=True,
             config_propagated=True,
-            image=self.model.config["image"]
+            image="",
         )
 
     def _on_start(self, event):
         set_juju_pod_spec(self)
+        wait_for_pod_readiness(self)
         self._stored.recently_started = True
         self._stored.config_propagated = True
+        self._stored.image = self.model.config["image"]
 
     def _on_config_changed(self, event):
-        set_juju_pod_spec(self)
+        wait_for_pod_readiness(self)
+        currentimage = self.model.config["image"]
+        if currentimage not in self._stored.image:
+            logger.debug("found a new image: %r", currentimage)
+            set_juju_pod_spec(self)
+            wait_for_pod_readiness(self)
+            self._stored.image = currentimage
 
     def _on_update_status(self, event):
         wait_for_pod_readiness(self)
 
     def _on_upgrade(self, event):
-        _on_start(self, event)
+        self._on_start(event)
 
     def _on_fortune_action(self, event):
         fail = event.params["fail"]
@@ -69,7 +77,7 @@ def build_juju_unit_status(pod_status):
     elif pod_status.is_running and not pod_status.is_ready:
         unit_status = MaintenanceStatus("Pod is getting ready")
     elif pod_status.is_running and pod_status.is_ready:
-        unit_status = ActiveStatus()
+        unit_status = ActiveStatus("Pod is Ready")
     else:
         # Covering a "variable referenced before assignment" linter error
         unit_status = BlockedStatus(
@@ -122,23 +130,28 @@ def set_juju_pod_spec(self):
     with open("templates/spec_template.yaml") as spec_file:
         podSpecTemplate = spec_file.read()
     with open("templates/spec_template_resources.yaml") as k8sres_file:
-        k9sResTemplate = k8sres_file.read()
-    dockerImage = self.model.config['image']
+        k8sResTemplate = k8sres_file.read()
     data = {
         "name": self.model.app.name,
-        "docker_image": dockerImage,
+        "model": self.model.name,
+        "docker_image": self.model.config['image'],
+        "cluster_name": self.model.config['cluster_name'],
+        "max_heap_size": self.model.config['max_heap_size'],
+        "heap_newsize": self.model.config['heap_newsize'],
+        "datacenter": self.model.config['datacenter'],
+        "rack": self.model.config['rack'],
     }
     logging.info(data)
     podSpec = podSpecTemplate % data
     juju_pod_spec = yaml.load(podSpec)
-    juju_res_spec = yaml.load(k9sResTemplate)
+    juju_res_spec = yaml.load(k8sResTemplate)
     self.model.pod.set_spec(juju_pod_spec, juju_res_spec)
     return True
 
 def wait_for_pod_readiness(self):
     juju_model = self.model.name
     juju_app = self.model.app.name
-    juju_unit = self.model.unit
+    juju_unit = self.model.unit.name
     pod_is_ready = False
     k8s = ops.lib.use("k8s", 0, "chipaca@canonical.com")
 
@@ -148,11 +161,10 @@ def wait_for_pod_readiness(self):
                                         juju_app=juju_app,
                                         juju_unit=juju_unit)
     logging.debug("Received k8s pod status: {0}".format(k8s_pod_status))
-    logging.debug(k8s_pod_status)
     juju_unit_status = build_juju_unit_status(k8s_pod_status)
     logging.debug("Built unit status: {0}".format(juju_unit_status))
     self.model.unit.status = juju_unit_status
 
 
 if __name__ == "__main__":
-    main(CharmK8SCassandraCharm)
+    main(K8SCassandraCharm)
