@@ -12,11 +12,8 @@ containers:
         name: cql
     kubernetes:
       readinessProbe:
-        exec:
-          command:
-          - /bin/bash
-          - -c
-          - /ready-probe.sh
+        tcpSocket:
+          port: 7000
         initialDelaySeconds: 15
         timeoutSeconds: 5
       securityContext:
