@@ -22,7 +22,7 @@ Cassandra nodes which seed from each other to create a ring of servers:
     
     juju bootstrap microk8s k8s-cloud
     juju add-model cassandramodel
-    juju deploy -n3 cs:narindergupta/k8s-cassandra cassandra
+    juju deploy -n3 cs:~narindergupta/k8s-cassandra cassandra
 
 The service units will deploy and will form a single ring.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2020 narindergupta
+# Copyright 2020 Canonical Ltd..
 # See LICENSE file for licensing details.
 
 import logging
@@ -30,6 +30,9 @@ logger = logging.getLogger(__name__)
 
 
 class K8SCassandraCharm(CharmBase):
+    """ This charm class is main Class of the
+    K8s Cassandra charm.
+    """
     _stored = StoredState()
 
     def __init__(self, *args):
@@ -47,6 +50,7 @@ class K8SCassandraCharm(CharmBase):
         )
 
     def _on_start(self, event):
+        """ This method is for start of charm event. """
         self.set_juju_pod_spec()
         self.wait_for_pod_readiness()
         self._stored.recently_started = True
@@ -54,6 +58,7 @@ class K8SCassandraCharm(CharmBase):
         self._stored.image = self.model.config["image"]
 
     def _on_config_changed(self, event):
+        """ This method is for config change event. """
         self.wait_for_pod_readiness()
         currentimage = self.model.config["image"]
         if currentimage not in self._stored.image:
@@ -63,24 +68,30 @@ class K8SCassandraCharm(CharmBase):
             self._stored.image = currentimage
 
     def _on_update_status(self, event):
+        """ This method with update status every juju refresh cycle. """
         self.wait_for_pod_readiness()
 
     def _on_upgrade(self, event):
+        """ This method with upgrade Cassandra. """
         self._on_start(event)
 
     def _on_status_action(self, event):
+        """ This method with run the action on Cassandra. """
         nodecommand = event.params["command"]
         if not nodecommand:
             event.fail(nodecommand)
         else:
             outputmes = self.runNodeTool(nodecommand)
-            event.set_results({"message": outputmes})
+            event.set_results({nodecommand: outputmes})
 
     def _on_remove(self, event):
-        self.runNodeTool("decommission")
+        """ This method with remove Cassandra instance. """
+        nodecommand = event.params["command"]
+        #self.runNodeTool("decommission")
         return true
 
     def runNodeTool(self, action):
+        """ This method with run nodetool Command. """
         nodecommand = "nodetool " + action
         statusout = subprocess.check_output(nodecommand,
                                universal_newlines=True,shell=True)
@@ -91,6 +102,7 @@ class K8SCassandraCharm(CharmBase):
             return "cassandra is Not running"
 
     def build_juju_unit_status(self, pod_status):
+        """ This method with build the charm status based on container. """
         if pod_status.is_unknown:
             unit_status = MaintenanceStatus("Waiting for pod to appear")
         elif not pod_status.is_running:
@@ -110,6 +122,7 @@ class K8SCassandraCharm(CharmBase):
         return unit_status
 
     def ensure_config_is_reloaded(event, state):
+        """ This method with reload the config for container. """
         juju_model = self.model.name
         juju_app = self.model.app.name
 
@@ -140,6 +153,7 @@ class K8SCassandraCharm(CharmBase):
         return
 
     def set_juju_pod_spec(self):
+        """ This method with reload the config for container. """
         logging.info('MAKING POD SPEC')
         if not self.unit.is_leader():
             logging.debug("Unit is not a leader, skip pod spec configuration")
@@ -150,8 +164,6 @@ class K8SCassandraCharm(CharmBase):
         logging.debug("Building Juju pod spec")
         with open("templates/spec_template.yaml") as spec_file:
             podSpecTemplate = spec_file.read()
-        with open("templates/spec_template_resources.yaml") as k8sres_file:
-            k8sResTemplate = k8sres_file.read()
         data = {
             "name": self.model.app.name,
             "model": self.model.name,
@@ -161,15 +173,16 @@ class K8SCassandraCharm(CharmBase):
             "heap_newsize": self.model.config['heap_newsize'],
             "datacenter": self.model.config['datacenter'],
             "rack": self.model.config['rack'],
+            "jvm_opt": self.model.config['jvm_opt'],
         }
         logging.info(data)
         podSpec = podSpecTemplate % data
         juju_pod_spec = yaml.load(podSpec)
-        juju_res_spec = yaml.load(k8sResTemplate)
-        self.model.pod.set_spec(juju_pod_spec, juju_res_spec)
+        self.model.pod.set_spec(juju_pod_spec)
         return True
 
     def wait_for_pod_readiness(self):
+        """ This method with create a pod and waut for ready state. """
         juju_model = self.model.name
         juju_app = self.model.app.name
         juju_unit = self.model.unit.name
@@ -188,4 +201,5 @@ class K8SCassandraCharm(CharmBase):
 
 
 if __name__ == "__main__":
+    """ Main of the charm class instantiation. """
     main(K8SCassandraCharm)

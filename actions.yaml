@@ -1,13 +1,13 @@
-# Copyright 2020 narindergupta
+# Copyright 2020 Canonical Ltd.
 # See LICENSE file for licensing details.
 #
-# This is only an example, and you should edit to suit your needs.
-# If you don't need actions, you can remove the file entirely.
-# It ties in to the example _on_fortune_action handler in src/charm.py
+# This action expects the python3 package in the image you are deploying.
 status:
   description: Returns a cluster status.
   params:
     command:
-      description: "Returns a Cassandra commands ussing node tool"
+      description: |
+          "Return the result of nodetool command. This action takes
+           the argument for nodetool command."
       type: string
       default: "status"
