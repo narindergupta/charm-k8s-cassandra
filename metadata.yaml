@@ -1,4 +1,4 @@
-# Copyright 2020 narindergupta
+# Copyright 2020 Canonical Ltd.
 # See LICENSE file for licensing details.
 name: k8s-cassandra
 summary: distributed storage system for structured data.
